@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chard Threads — Bespoke Tailoring, Adenta</title>
+<meta name="description" content="Chard Threads is a bespoke tailoring house in Adenta Municipality — measure, cut, stitch, fit.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Space+Grotesk:wght@300;400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="theme-light">
+
+<!-- ===== AMBIENT LIGHT LAYER ===== -->
+<div class="ambient" aria-hidden="true">
+  <svg class="ambient-svg" viewBox="0 0 1600 1200" preserveAspectRatio="xMidYMid slice">
+    <defs>
+      <radialGradient id="glowA" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="var(--glow-a)" stop-opacity="0.55"/>
+        <stop offset="100%" stop-color="var(--glow-a)" stop-opacity="0"/>
+      </radialGradient>
+      <radialGradient id="glowB" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="var(--glow-b)" stop-opacity="0.4"/>
+        <stop offset="100%" stop-color="var(--glow-b)" stop-opacity="0"/>
+      </radialGradient>
+    </defs>
+    <circle class="drift drift-1" cx="220" cy="180" r="420" fill="url(#glowA)"/>
+    <circle class="drift drift-2" cx="1380" cy="620" r="520" fill="url(#glowB)"/>
+    <circle class="drift drift-3" cx="760" cy="1050" r="380" fill="url(#glowA)"/>
+  </svg>
+</div>
+
+<!-- ===== STITCH LINE (signature scroll element) ===== -->
+<svg class="stitch-rail" width="3" height="100%" viewBox="0 0 3 4000" preserveAspectRatio="none" aria-hidden="true">
+  <path id="stitchPath" d="M1.5 0 L1.5 4000" stroke="var(--thread)" stroke-width="2" stroke-dasharray="10 10" fill="none"/>
+</svg>
+
+<!-- ===== NAV ===== -->
+<header class="nav">
+  <a href="#top" class="nav-logo">
+    <img src="imgs/logo.jpg" alt="Chard Threads" class="logo-img">
+    <span class="nav-wordmark">Chard&nbsp;Threads</span>
+  </a>
+
+  <nav class="nav-links" aria-label="Primary">
+    <a href="#work">Work</a>
+    <a href="#process">Process</a>
+    <a href="#reels">Reels</a>
+    <a href="#visit">Visit</a>
+  </nav>
+
+  <div class="nav-actions">
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" aria-pressed="false">
+      <svg class="icon-sun" viewBox="0 0 40 40" fill="none">
+        <circle class="sun-core" cx="20" cy="20" r="8" stroke="currentColor" stroke-width="2"/>
+        <g class="sun-rays" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <line x1="20" y1="2" x2="20" y2="8"/>
+          <line x1="20" y1="32" x2="20" y2="38"/>
+          <line x1="2" y1="20" x2="8" y2="20"/>
+          <line x1="32" y1="20" x2="38" y2="20"/>
+          <line x1="7" y1="7" x2="11.5" y2="11.5"/>
+          <line x1="28.5" y1="28.5" x2="33" y2="33"/>
+          <line x1="7" y1="33" x2="11.5" y2="28.5"/>
+          <line x1="28.5" y1="11.5" x2="33" y2="7"/>
+        </g>
+      </svg>
+    </button>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- ===== HERO ===== -->
+  <section class="hero" id="hero">
+    <div class="hero-grid">
+      <div class="hero-copy" data-reveal>
+        <p class="eyebrow">
+          <svg class="icon-spool" width="22" height="22" viewBox="0 0 40 40" fill="none">
+            <ellipse cx="20" cy="8" rx="14" ry="5" stroke="currentColor" stroke-width="1.6"/>
+            <ellipse cx="20" cy="32" rx="14" ry="5" stroke="currentColor" stroke-width="1.6"/>
+            <line x1="6" y1="8" x2="6" y2="32" stroke="currentColor" stroke-width="1.6"/>
+            <line x1="34" y1="8" x2="34" y2="32" stroke="currentColor" stroke-width="1.6"/>
+            <path class="spool-thread" d="M9 12 C 20 18, 20 18, 31 24 M9 16 C 20 20, 20 20, 31 28 M9 20 C 20 24, 20 24, 31 12" stroke="currentColor" stroke-width="1.2" fill="none"/>
+          </svg>
+          Adenta Municipality · Est. bespoke
+        </p>
+        <h1 class="hero-title">
+          <span class="line">Cut to</span>
+          <span class="line accent-line">your&nbsp;line.</span>
+        </h1>
+        <p class="hero-sub">Chard Threads builds garments the old way — measured on you, cut for you, stitched by hand where it matters. No rack sizes. No guessing.</p>
+        <div class="hero-cta-row">
+          <a href="#visit" class="btn-primary">
+            <span>Book a fitting</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+          <a href="#work" class="btn-ghost">See the work</a>
+        </div>
+      </div>
+
+      <div class="hero-needle" data-reveal>
+        <svg class="needle-svg" viewBox="0 0 300 460" fill="none">
+          <path class="needle-body" d="M150 10 L150 380" stroke="var(--ink)" stroke-width="3" stroke-linecap="round"/>
+          <ellipse class="needle-eye" cx="150" cy="30" rx="10" ry="16" stroke="var(--ink)" stroke-width="3" fill="none"/>
+          <path class="needle-tip" d="M150 380 L150 440" stroke="var(--ink)" stroke-width="3" stroke-linecap="round"/>
+          <path class="needle-thread" id="needleThread"
+            d="M140 40 C 60 90, 220 140, 90 190 C 30 220, 240 260, 110 300 C 60 330, 210 350, 150 380"
+            stroke="var(--thread)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- scroll hint -->
+    <div class="scroll-hint" aria-hidden="true">
+      <svg width="16" height="34" viewBox="0 0 16 34" fill="none">
+        <rect x="1" y="1" width="14" height="24" rx="7" stroke="currentColor" stroke-width="1.4"/>
+        <circle class="scroll-dot" cx="8" cy="9" r="2.4" fill="currentColor"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ===== IMAGE SLIDER — right after welcome text ===== -->
+  <section class="slider-section" id="slider" data-reveal>
+    <div class="slider" id="sliderTrack">
+      <figure class="slide is-active">
+        <img src="imgs/c1.jpg" alt="Chard Threads garment, look one">
+      </figure>
+      <figure class="slide">
+        <img src="imgs/c2.jpg" alt="Chard Threads garment, look two">
+      </figure>
+      <figure class="slide">
+        <img src="imgs/c3.jpg" alt="Chard Threads garment, look three">
+      </figure>
+    </div>
+
+    <svg class="slide-frame" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+      <rect x="0.5" y="0.5" width="99" height="99" fill="none" stroke="var(--ink)" stroke-width="0.15"/>
+      <path class="corner" d="M0.5 8 V0.5 H8" fill="none" stroke="var(--thread)" stroke-width="0.4"/>
+      <path class="corner" d="M92 0.5 H99.5 V8" fill="none" stroke="var(--thread)" stroke-width="0.4"/>
+      <path class="corner" d="M99.5 92 V99.5 H92" fill="none" stroke="var(--thread)" stroke-width="0.4"/>
+      <path class="corner" d="M8 99.5 H0.5 V92" fill="none" stroke="var(--thread)" stroke-width="0.4"/>
+    </svg>
+
+    <div class="slider-controls">
+      <button class="slide-btn" id="prevSlide" aria-label="Previous look">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="slide-dots" id="slideDots">
+        <button class="dot is-active" data-slide="0" aria-label="Look 1"></button>
+        <button class="dot" data-slide="1" aria-label="Look 2"></button>
+        <button class="dot" data-slide="2" aria-label="Look 3"></button>
+      </div>
+      <button class="slide-btn" id="nextSlide" aria-label="Next look">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+  </section>
+
+  <!-- ===== PROCESS: Measure / Cut / Stitch / Fit ===== -->
+  <section class="process" id="process">
+    <p class="section-eyebrow" data-reveal>How a garment is made here</p>
+    <h2 class="section-title" data-reveal>Four passes. <em>One fit.</em></h2>
+
+    <div class="process-grid">
+
+      <article class="process-card" data-reveal>
+        <svg class="proc-icon" viewBox="0 0 64 64" fill="none">
+          <path class="tape" d="M6 32 H58" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <g class="tape-ticks" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+            <line x1="12" y1="26" x2="12" y2="38"/>
+            <line x1="20" y1="28" x2="20" y2="36"/>
+            <line x1="28" y1="26" x2="28" y2="38"/>
+            <line x1="36" y1="28" x2="36" y2="36"/>
+            <line x1="44" y1="26" x2="44" y2="38"/>
+            <line x1="52" y1="28" x2="52" y2="36"/>
+          </g>
+          <circle class="tape-end" cx="6" cy="32" r="4" stroke="currentColor" stroke-width="2" fill="none"/>
+        </svg>
+        <h3>01 — Measure</h3>
+        <p>Thirty-one points on your actual body, not a size chart. We write it down once and keep it for life.</p>
+      </article>
+
+      <article class="process-card" data-reveal>
+        <svg class="proc-icon" viewBox="0 0 64 64" fill="none">
+          <path class="scissor-blade-a" d="M14 14 L46 46" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <path class="scissor-blade-b" d="M46 14 L14 46" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="14" cy="14" r="4" stroke="currentColor" stroke-width="2" fill="none"/>
+          <circle cx="14" cy="46" r="4" stroke="currentColor" stroke-width="2" fill="none"/>
+          <path class="chalk-line" d="M8 54 H56" stroke="currentColor" stroke-width="1.4" stroke-dasharray="3 4"/>
+        </svg>
+        <h3>02 — Cut</h3>
+        <p>A paper pattern drafted to your measure, chalked onto cloth, then cut by hand along the line.</p>
+      </article>
+
+      <article class="process-card" data-reveal>
+        <svg class="proc-icon" viewBox="0 0 64 64" fill="none">
+          <path class="stitch-run" d="M8 32 Q 16 20, 24 32 T 40 32 T 56 32" stroke="currentColor" stroke-width="2" stroke-dasharray="6 5" fill="none" stroke-linecap="round"/>
+          <circle class="needle-dot" cx="8" cy="32" r="2.6" fill="currentColor"/>
+        </svg>
+        <h3>03 — Stitch</h3>
+        <p>Seams closed by hand where hand-work holds better; machine where machine-work holds better.</p>
+      </article>
+
+      <article class="process-card" data-reveal>
+        <svg class="proc-icon" viewBox="0 0 64 64" fill="none">
+          <path d="M22 10 V54 M42 10 V54" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <path class="fit-check" d="M14 32 L26 42 L50 16" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        </svg>
+        <h3>04 — Fit</h3>
+        <p>A second fitting before the final press. If it doesn't sit right, it isn't finished yet.</p>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ===== WORK / GALLERY STRIP ===== -->
+  <section class="work" id="work">
+    <p class="section-eyebrow" data-reveal>Recent</p>
+    <h2 class="section-title" data-reveal>Selected <em>garments.</em></h2>
+
+    <div class="work-strip" data-reveal>
+      <figure class="work-item lg"><img src="imgs/c1.jpg" alt="Garment detail one"></figure>
+      <figure class="work-item"><img src="imgs/c2.jpg" alt="Garment detail two"></figure>
+      <figure class="work-item"><img src="imgs/c3.jpg" alt="Garment detail three"></figure>
+    </div>
+  </section>
+
+  <!-- ===== REELS ===== -->
+  <section class="reels" id="reels">
+    <p class="section-eyebrow" data-reveal>On TikTok</p>
+    <h2 class="section-title" data-reveal>Watch it <em>come together.</em></h2>
+
+    <div class="reels-grid" data-reveal>
+      <div class="reel-embed">
+        <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@chard_threads/video/7653036009369652487" data-video-id="7653036009369652487" style="max-width: 605px;min-width: 325px;">
+          <section>
+            <a target="_blank" title="@chard_threads" href="https://www.tiktok.com/@chard_threads?refer=embed">@chard_threads</a>
+            <p>👖 ChardThreads</p>
+            <a target="_blank" title="♬ original sound - ChardThreads" href="https://www.tiktok.com/music/original-sound-7653036089850694420?refer=embed">♬ original sound - ChardThreads</a>
+          </section>
+        </blockquote>
+      </div>
+      <div class="reel-embed">
+        <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@chard_threads/video/7649081877797670162" data-video-id="7649081877797670162" style="max-width: 605px;min-width: 325px;">
+          <section>
+            <a target="_blank" title="@chard_threads" href="https://www.tiktok.com/@chard_threads?refer=embed">@chard_threads</a>
+            <p></p>
+            <a target="_blank" title="♬ original sound - Sunmisola❤️" href="https://www.tiktok.com/music/original-sound-7559652128126421816?refer=embed">♬ original sound - Sunmisola❤️</a>
+          </section>
+        </blockquote>
+      </div>
+    </div>
+    <script async src="https://www.tiktok.com/embed.js"></script>
+  </section>
+
+  <!-- ===== VISIT / CONTACT ===== -->
+  <section class="visit" id="visit">
+    <div class="visit-grid">
+      <div data-reveal>
+        <p class="section-eyebrow">Find us</p>
+        <h2 class="section-title">Come by the <em>shop.</em></h2>
+
+        <ul class="info-list">
+          <li>
+            <svg class="info-icon" viewBox="0 0 32 32" fill="none">
+              <path class="pin-drop" d="M16 4 C10 4 6 8 6 14 C6 21 16 28 16 28 C16 28 26 21 26 14 C26 8 22 4 16 4 Z" stroke="currentColor" stroke-width="2" fill="none"/>
+              <circle cx="16" cy="14" r="3.4" stroke="currentColor" stroke-width="2"/>
+            </svg>
+            <div>
+              <span class="info-label">Address</span>
+              <span class="info-value">PQ6V+H7C, Adenta Municipality</span>
+            </div>
+          </li>
+          <li>
+            <svg class="info-icon phone-ring" viewBox="0 0 32 32" fill="none">
+              <path d="M9 5 L13 9 L10 13 C11.5 17 15 20.5 19 22 L23 19 L27 23 C25 26 22 27 19 26 C11 23.5 8.5 21 6 13 C5 10 6 7 9 5 Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            </svg>
+            <div>
+              <span class="info-label">Phone</span>
+              <a class="info-value" href="tel:0543702995">054 370 2995</a>
+            </div>
+          </li>
+          <li>
+            <svg class="info-icon" viewBox="0 0 32 32" fill="none">
+              <circle cx="16" cy="16" r="11" stroke="currentColor" stroke-width="2"/>
+              <path class="clock-hands" d="M16 9 V16 L21 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <div>
+              <span class="info-label">Hours</span>
+              <span class="info-value">Open today · closes 7&nbsp;pm</span>
+            </div>
+          </li>
+          <li>
+            <svg class="info-icon" viewBox="0 0 32 32" fill="none">
+              <path class="star-path" d="M16 5 L18.5 12.5 L26 13 L20 17.7 L22 25 L16 20.6 L10 25 L12 17.7 L6 13 L13.5 12.5 Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" fill="none"/>
+            </svg>
+            <div>
+              <span class="info-label">Rating</span>
+              <span class="info-value">5.0 · 1 Google review</span>
+            </div>
+          </li>
+        </ul>
+
+        <div class="social-row">
+          <a href="https://www.instagram.com/chard_threads/" target="_blank" rel="noopener" aria-label="Instagram" class="social-btn">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="1.8"/>
+              <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.8"/>
+              <circle class="ig-dot" cx="17.2" cy="6.8" r="1.1" fill="currentColor"/>
+            </svg>
+          </a>
+          <a href="https://www.facebook.com/ChardThreads/" target="_blank" rel="noopener" aria-label="Facebook" class="social-btn">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <path d="M14 21v-7h2.4l.4-3H14v-2c0-.87.24-1.46 1.5-1.46H17V4.14C16.6 4.1 15.7 4 14.6 4c-2.3 0-3.9 1.4-3.9 4v2.3H8.3v3H10.7v7h3.3Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" fill="none"/>
+            </svg>
+          </a>
+          <a href="https://www.tiktok.com/@chard_threads/" target="_blank" rel="noopener" aria-label="TikTok" class="social-btn">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <path class="tiktok-mark" d="M14 3c.4 2 2 3.6 4 3.9v3c-1.5 0-2.9-.5-4-1.3V15a5 5 0 1 1-5-5c.3 0 .7 0 1 .1v3.1a2 2 0 1 0 1.4 1.9V3h2.6Z" stroke="currentColor" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="visit-map" data-reveal aria-hidden="true">
+        <svg viewBox="0 0 400 460" fill="none" class="map-svg">
+          <rect x="1" y="1" width="398" height="458" rx="2" stroke="var(--ink)" stroke-opacity="0.25" stroke-width="1"/>
+          <g class="map-lines" stroke="var(--ink)" stroke-opacity="0.35" stroke-width="1.2">
+            <path d="M0 120 H400"/>
+            <path d="M0 260 H400"/>
+            <path d="M120 0 V460"/>
+            <path d="M300 0 V460"/>
+          </g>
+          <path class="map-route" d="M120 260 C 160 200, 220 220, 300 120" stroke="var(--thread)" stroke-width="2.4" stroke-dasharray="8 7" fill="none"/>
+          <g class="map-pin">
+            <circle cx="300" cy="120" r="26" fill="var(--glow-a)" opacity="0.35"/>
+            <path d="M300 96 C 285 96 275 106 275 119 C275 133 300 152 300 152 C300 152 325 133 325 119 C325 106 315 96 300 96Z" fill="var(--thread)"/>
+            <circle cx="300" cy="118" r="7" fill="var(--bg)"/>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <div class="footer-inner">
+    <span>© <span id="year"></span> Chard Threads — Adenta Municipality</span>
+    <a href="#top" class="footer-top">
+      Back to top
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 19V5M5 12l7-7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lenis/1.1.13/lenis.min.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
