@@ -1,208 +1,159 @@
-/* =========================================================
-   Chard Threads — site script
-   Handles: smooth scroll, theme toggle, stitch-rail progress,
-   image slider, scroll reveals, footer year.
-========================================================= */
-
-(() => {
+(function () {
   "use strict";
 
-  /* ---------------- Smooth scroll (Lenis) ---------------- */
-  let lenis = null;
-  if (window.Lenis) {
-    lenis = new Lenis({
-      duration: 1.1,
-      easing: (t) => 1 - Math.pow(1 - t, 3),
+  /* ---------------------------------------------------------
+     Theme: defaults to light, persists choice in localStorage
+  --------------------------------------------------------- */
+  var root = document.documentElement;
+  var themeBtn = document.getElementById("theme-toggle");
+  var stored = null;
+  try { stored = localStorage.getItem("chard-theme"); } catch (e) {}
+
+  function applyTheme(theme) {
+    if (theme === "dark") {
+      root.classList.add("dark");
+      themeBtn.setAttribute("aria-pressed", "true");
+      themeBtn.setAttribute("aria-label", "Switch to light mode");
+    } else {
+      root.classList.remove("dark");
+      themeBtn.setAttribute("aria-pressed", "false");
+      themeBtn.setAttribute("aria-label", "Switch to dark mode");
+    }
+  }
+
+  applyTheme(stored === "dark" ? "dark" : "light");
+
+  themeBtn.addEventListener("click", function () {
+    var next = root.classList.contains("dark") ? "light" : "dark";
+    applyTheme(next);
+    try { localStorage.setItem("chard-theme", next); } catch (e) {}
+  });
+
+  /* ---------------------------------------------------------
+     Mobile nav
+  --------------------------------------------------------- */
+  var menuBtn = document.getElementById("menu-toggle");
+  var mobileNav = document.getElementById("mobile-nav");
+
+  function closeMenu() {
+    menuBtn.classList.remove("is-open");
+    mobileNav.classList.remove("is-open");
+    menuBtn.setAttribute("aria-expanded", "false");
+  }
+
+  menuBtn.addEventListener("click", function () {
+    var open = mobileNav.classList.toggle("is-open");
+    menuBtn.classList.toggle("is-open", open);
+    menuBtn.setAttribute("aria-expanded", open ? "true" : "false");
+  });
+
+  mobileNav.querySelectorAll("a").forEach(function (a) {
+    a.addEventListener("click", closeMenu);
+  });
+
+  /* ---------------------------------------------------------
+     Lenis smooth scroll
+  --------------------------------------------------------- */
+  var lenis = null;
+  var prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if (window.Lenis && !prefersReduced) {
+    lenis = new window.Lenis({
+      duration: 1.15,
+      easing: function (t) { return 1 - Math.pow(1 - t, 3); },
       smoothWheel: true,
     });
 
-    const raf = (time) => {
+    function raf(time) {
       lenis.raf(time);
       requestAnimationFrame(raf);
-    };
+    }
     requestAnimationFrame(raf);
   }
 
-  // Smooth-scroll for in-page anchor links (#work, #process, etc.)
-  document.querySelectorAll('a[href^="#"]').forEach((link) => {
-    link.addEventListener("click", (e) => {
-      const targetId = link.getAttribute("href");
-      if (!targetId || targetId === "#") return;
-      const target = document.querySelector(targetId);
+  // Route in-page anchor links through Lenis (or native fallback)
+  document.querySelectorAll('a[href^="#"]').forEach(function (link) {
+    link.addEventListener("click", function (e) {
+      var id = link.getAttribute("href");
+      if (id.length < 2) return;
+      var target = document.querySelector(id);
       if (!target) return;
       e.preventDefault();
+      closeMenu();
       if (lenis) {
-        lenis.scrollTo(target, { offset: -90 });
+        lenis.scrollTo(target, { offset: -20 });
       } else {
-        target.scrollIntoView({ behavior: "smooth", block: "start" });
+        target.scrollIntoView({ behavior: prefersReduced ? "auto" : "smooth", block: "start" });
       }
     });
   });
 
-  /* ---------------- Theme toggle ---------------- */
-  const body = document.body;
-  const themeToggle = document.getElementById("themeToggle");
-  const THEME_KEY = "chard-threads-theme";
+  /* ---------------------------------------------------------
+     Scroll reveal (fade + rise), staggered within a section
+  --------------------------------------------------------- */
+  var revealEls = Array.prototype.slice.call(document.querySelectorAll("[data-reveal]"));
 
-  const applyTheme = (theme) => {
-    const isDark = theme === "dark";
-    body.classList.toggle("theme-dark", isDark);
-    body.classList.toggle("theme-light", !isDark);
-    if (themeToggle) themeToggle.setAttribute("aria-pressed", String(isDark));
-  };
-
-  // Respect a stored preference; otherwise fall back to system preference.
-  let storedTheme = null;
-  try {
-    storedTheme = localStorage.getItem(THEME_KEY);
-  } catch (err) {
-    storedTheme = null;
-  }
-  const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
-  applyTheme(storedTheme || (prefersDark ? "dark" : "light"));
-
-  if (themeToggle) {
-    themeToggle.addEventListener("click", () => {
-      const next = body.classList.contains("theme-dark") ? "light" : "dark";
-      applyTheme(next);
-      try {
-        localStorage.setItem(THEME_KEY, next);
-      } catch (err) {
-        /* storage unavailable — theme just won't persist */
-      }
-    });
-  }
-
-  /* ---------------- Stitch rail scroll progress ---------------- */
-  const stitchPath = document.getElementById("stitchPath");
-  if (stitchPath) {
-    const totalLength = stitchPath.getTotalLength ? stitchPath.getTotalLength() : 4000;
-
-    const updateStitch = () => {
-      const doc = document.documentElement;
-      const scrollTop = window.scrollY || doc.scrollTop;
-      const maxScroll = (doc.scrollHeight - doc.clientHeight) || 1;
-      const progress = Math.min(Math.max(scrollTop / maxScroll, 0), 1);
-      const offset = totalLength * (1 - progress);
-      stitchPath.style.strokeDashoffset = String(offset);
-    };
-
-    stitchPath.style.strokeDasharray = String(totalLength);
-    stitchPath.style.strokeDashoffset = String(totalLength);
-    updateStitch();
-
-    window.addEventListener("scroll", updateStitch, { passive: true });
-    window.addEventListener("resize", updateStitch);
-    if (lenis) lenis.on("scroll", updateStitch);
-  }
-
-  /* ---------------- Scroll reveals ---------------- */
-  const revealEls = document.querySelectorAll("[data-reveal]");
-  if (revealEls.length) {
-    if ("IntersectionObserver" in window) {
-      const revealObserver = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              entry.target.classList.add("in-view");
-              revealObserver.unobserve(entry.target);
-            }
-          });
-        },
-        { threshold: 0.15, rootMargin: "0px 0px -60px 0px" }
-      );
-      revealEls.forEach((el) => revealObserver.observe(el));
-    } else {
-      // Fallback: reveal everything immediately
-      revealEls.forEach((el) => el.classList.add("in-view"));
-    }
-  }
-
-  /* ---------------- Image slider ---------------- */
-  const sliderTrack = document.getElementById("sliderTrack");
-  if (sliderTrack) {
-    const slides = Array.from(sliderTrack.querySelectorAll(".slide"));
-    const dots = Array.from(document.querySelectorAll("#slideDots .dot"));
-    const prevBtn = document.getElementById("prevSlide");
-    const nextBtn = document.getElementById("nextSlide");
-    const AUTOPLAY_MS = 5500;
-
-    let current = Math.max(slides.findIndex((s) => s.classList.contains("is-active")), 0);
-    let autoplayTimer = null;
-
-    const goTo = (index) => {
-      const next = (index + slides.length) % slides.length;
-      if (next === current) return;
-
-      slides[current].classList.remove("is-active");
-      dots[current] && dots[current].classList.remove("is-active");
-
-      current = next;
-
-      slides[current].classList.add("is-active");
-      dots[current] && dots[current].classList.add("is-active");
-    };
-
-    const next = () => goTo(current + 1);
-    const prev = () => goTo(current - 1);
-
-    const startAutoplay = () => {
-      stopAutoplay();
-      autoplayTimer = window.setInterval(next, AUTOPLAY_MS);
-    };
-    const stopAutoplay = () => {
-      if (autoplayTimer) {
-        window.clearInterval(autoplayTimer);
-        autoplayTimer = null;
-      }
-    };
-
-    if (nextBtn) {
-      nextBtn.addEventListener("click", () => {
-        next();
-        startAutoplay();
-      });
-    }
-    if (prevBtn) {
-      prevBtn.addEventListener("click", () => {
-        prev();
-        startAutoplay();
-      });
-    }
-    dots.forEach((dot, i) => {
-      dot.addEventListener("click", () => {
-        goTo(i);
-        startAutoplay();
-      });
+  if (prefersReduced || !("IntersectionObserver" in window)) {
+    revealEls.forEach(function (el) { el.classList.add("is-visible"); });
+  } else {
+    var groups = new Map();
+    revealEls.forEach(function (el) {
+      var parent = el.closest("section") || document.body;
+      if (!groups.has(parent)) groups.set(parent, []);
+      groups.get(parent).push(el);
     });
 
-    const sliderSection = document.getElementById("slider");
-    if (sliderSection) {
-      sliderSection.addEventListener("mouseenter", stopAutoplay);
-      sliderSection.addEventListener("mouseleave", startAutoplay);
-      sliderSection.addEventListener("focusin", stopAutoplay);
-      sliderSection.addEventListener("focusout", startAutoplay);
-    }
+    var io = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          var el = entry.target;
+          var siblings = groups.get(el.closest("section") || document.body) || [el];
+          var index = siblings.indexOf(el);
+          var delay = Math.min(index, 6) * 90;
+          el.style.transitionDelay = delay + "ms";
+          el.classList.add("is-visible");
+          io.unobserve(el);
+        });
+      },
+      { threshold: 0.18, rootMargin: "0px 0px -6% 0px" }
+    );
 
-    // Basic keyboard support when the slider region has focus
-    document.addEventListener("keydown", (e) => {
-      if (!sliderSection) return;
-      const rect = sliderSection.getBoundingClientRect();
-      const inView = rect.top < window.innerHeight && rect.bottom > 0;
-      if (!inView) return;
-      if (e.key === "ArrowRight") {
-        next();
-        startAutoplay();
-      } else if (e.key === "ArrowLeft") {
-        prev();
-        startAutoplay();
-      }
-    });
-
-    startAutoplay();
+    revealEls.forEach(function (el) { io.observe(el); });
   }
 
-  /* ---------------- Footer year ---------------- */
-  const yearEl = document.getElementById("year");
-  if (yearEl) yearEl.textContent = String(new Date().getFullYear());
+  /* ---------------------------------------------------------
+     Ambient blobs: gentle parallax tied to scroll position
+  --------------------------------------------------------- */
+  if (!prefersReduced) {
+    var ambients = Array.prototype.slice.call(document.querySelectorAll(".ambient"));
+    var ticking = false;
+
+    function updateParallax() {
+      var y = window.scrollY || window.pageYOffset;
+      ambients.forEach(function (el, i) {
+        var speed = (i % 2 === 0) ? 0.04 : -0.03;
+        el.style.transform = "translate3d(0," + (y * speed) + "px,0)";
+      });
+      ticking = false;
+    }
+
+    window.addEventListener("scroll", function () {
+      if (!ticking) {
+        requestAnimationFrame(updateParallax);
+        ticking = true;
+      }
+    }, { passive: true });
+  }
+
+  /* ---------------------------------------------------------
+     Header: subtle shrink on scroll
+  --------------------------------------------------------- */
+  var header = document.getElementById("site-header");
+  var lastY = window.scrollY;
+  window.addEventListener("scroll", function () {
+    var y = window.scrollY;
+    header.style.boxShadow = y > 4 ? "0 1px 0 var(--line)" : "none";
+    lastY = y;
+  }, { passive: true });
 })();

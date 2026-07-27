@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unity Elites</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap');
+
+:root{
+  --bg:#060911;
+  --bg2:#0c1322;
+  --surface: rgba(255,255,255,0.055);
+  --surface-strong: rgba(255,255,255,0.09);
+  --surface-border: rgba(255,255,255,0.14);
+  --text:#eef2f8;
+  --text-muted:#8f9bb3;
+  --cyan:#35d9ea;
+  --violet:#b075f5;
+  --shadow: rgba(0,0,0,0.45);
+  --node: rgba(255,255,255,0.4);
+  color-scheme: dark;
+}
+html[data-theme="light"]{
+  --bg:#eef1f7;
+  --bg2:#e2e7f1;
+  --surface: rgba(255,255,255,0.5);
+  --surface-strong: rgba(255,255,255,0.72);
+  --surface-border: rgba(15,23,42,0.10);
+  --text:#11141d;
+  --text-muted:#5a6280;
+  --cyan:#0c8fa8;
+  --violet:#7c3aed;
+  --shadow: rgba(30,41,80,0.14);
+  --node: rgba(15,23,42,0.28);
+  color-scheme: light;
+}
+
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Inter',system-ui,sans-serif;
+  overflow-x:hidden;
+  transition:background .5s ease,color .5s ease;
+}
+
+/* ---------- fixed ambient background ---------- */
+.bg-fixed{
+  position:fixed;
+  inset:0;
+  z-index:-2;
+  background:
+    radial-gradient(circle at 12% 18%, color-mix(in srgb, var(--cyan) 20%, transparent), transparent 42%),
+    radial-gradient(circle at 85% 12%, color-mix(in srgb, var(--violet) 22%, transparent), transparent 45%),
+    radial-gradient(circle at 78% 82%, color-mix(in srgb, var(--cyan) 14%, transparent), transparent 40%),
+    linear-gradient(160deg, var(--bg) 0%, var(--bg2) 100%);
+  transition:background .5s ease;
+}
+.bg-fixed::before{
+  content:"";
+  position:absolute; inset:0;
+  background-image: radial-gradient(var(--node) 1px, transparent 1px);
+  background-size:34px 34px;
+  opacity:.35;
+  mask-image: radial-gradient(circle at 50% 40%, black 0%, transparent 75%);
+}
+.bg-mark{
+  position:absolute;
+  top:6%;
+  right:-6%;
+  width:46vw;
+  max-width:640px;
+  opacity:.5;
+  animation: spin-slow 90s linear infinite;
+  transform-origin:50% 50%;
+}
+@keyframes spin-slow{ to{ transform:rotate(360deg); } }
+
+/* ---------- signal thread ---------- */
+.thread{
+  position:absolute;
+  left:50%;
+  top:0;
+  bottom:0;
+  width:2px;
+  transform:translateX(-50%);
+  background: repeating-linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--cyan) 55%, transparent) 0 6px,
+    transparent 6px 16px
+  );
+  background-size: 2px 320px;
+  animation: thread-flow 6s linear infinite;
+  z-index:0;
+  pointer-events:none;
+}
+@keyframes thread-flow{ to{ background-position:0 320px; } }
+.node{
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:12px;height:12px;
+  transform:translate(-50%,-50%);
+  border-radius:50%;
+  background:radial-gradient(circle at 35% 30%, #fff, var(--cyan) 60%, transparent 75%);
+  box-shadow:0 0 18px 4px color-mix(in srgb, var(--cyan) 55%, transparent);
+  z-index:1;
+}
+.chapter-left .node{ background:radial-gradient(circle at 35% 30%, #fff, var(--violet) 60%, transparent 75%);
+  box-shadow:0 0 18px 4px color-mix(in srgb, var(--violet) 55%, transparent); }
+
+/* ---------- persistent brand mark (top left, always visible) ---------- */
+.brand-mark{
+  position:fixed;
+  top:26px; left:28px;
+  z-index:60;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  text-decoration:none;
+  color:var(--text);
+}
+.logo-glyph{ width:34px; height:34px; display:block; }
+.brand-word{
+  font-family:'Space Grotesk',sans-serif;
+  font-weight:700;
+  font-size:15px;
+  letter-spacing:.06em;
+}
+.brand-word span{ color: var(--cyan); }
+
+/* ---------- theme toggle ---------- */
+.theme-toggle{
+  position:fixed;
+  top:22px; right:28px;
+  z-index:60;
+  width:42px; height:42px;
+  border-radius:50%;
+  border:1px solid var(--surface-border);
+  background:var(--surface);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer;
+  color:var(--text);
+  transition:transform .25s ease, background .3s ease;
+}
+.theme-toggle:hover{ transform:scale(1.06); }
+.theme-toggle:focus-visible{ outline:2px solid var(--cyan); outline-offset:3px; }
+.theme-toggle svg{ width:19px; height:19px; }
+.icon-sun{ display:none; }
+html[data-theme="light"] .icon-moon{ display:none; }
+html[data-theme="light"] .icon-sun{ display:block; }
+
+/* ---------- nav, hidden until scroll ---------- */
+.site-nav{
+  position:fixed;
+  top:0; left:0; right:0;
+  z-index:50;
+  display:flex; justify-content:center;
+  padding:16px 24px;
+  opacity:0;
+  transform:translateY(-16px);
+  pointer-events:none;
+  transition:opacity .45s ease, transform .45s ease;
+}
+.site-nav.visible{ opacity:1; transform:translateY(0); pointer-events:auto; }
+.nav-inner{
+  width:100%;
+  max-width:760px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:34px;
+  padding:12px 30px;
+  border-radius:999px;
+  background:var(--surface-strong);
+  border:1px solid var(--surface-border);
+  backdrop-filter:blur(18px) saturate(160%);
+  -webkit-backdrop-filter:blur(18px) saturate(160%);
+  box-shadow:0 10px 30px var(--shadow);
+}
+.nav-inner a{
+  color:var(--text-muted);
+  text-decoration:none;
+  font-size:13.5px;
+  font-weight:500;
+  letter-spacing:.02em;
+  transition:color .2s ease;
+}
+.nav-inner a:hover, .nav-inner a:focus-visible{ color:var(--text); }
+
+/* ---------- layout ---------- */
+main{ position:relative; z-index:2; }
+.chapter{
+  position:relative;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  padding:0 7vw;
+}
+.chapter-right{ justify-content:flex-end; }
+.chapter-left{ justify-content:flex-start; }
+
+.glass-panel{
+  position:relative;
+  width:100%;
+  max-width:530px;
+  padding:46px 44px;
+  border-radius:26px;
+  background:var(--surface);
+  border:1px solid var(--surface-border);
+  backdrop-filter:blur(22px) saturate(150%);
+  -webkit-backdrop-filter:blur(22px) saturate(150%);
+  box-shadow:0 20px 60px var(--shadow), inset 0 1px 0 rgba(255,255,255,0.06);
+  opacity:0;
+  transform:translateY(28px);
+  transition:opacity .7s ease, transform .7s ease;
+}
+.glass-panel.wide{ max-width:760px; }
+.glass-panel.in-view{ opacity:1; transform:translateY(0); }
+
+.chapter-right .glass-panel{ border-left:2px solid color-mix(in srgb, var(--cyan) 60%, transparent); }
+.chapter-left .glass-panel{ border-right:2px solid color-mix(in srgb, var(--violet) 60%, transparent); }
+
+.eyebrow{
+  display:inline-block;
+  font-family:'Space Grotesk',sans-serif;
+  font-size:12px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--cyan);
+  margin-bottom:14px;
+}
+.chapter-left .eyebrow{ color:var(--violet); }
+
+h1,h2{
+  font-family:'Space Grotesk',sans-serif;
+  font-weight:700;
+  line-height:1.05;
+  margin:0 0 18px;
+  letter-spacing:-0.01em;
+}
+h1{ font-size:clamp(40px,5.4vw,64px); }
+h2{ font-size:clamp(28px,3.4vw,38px); }
+
+p{
+  font-size:16px;
+  line-height:1.65;
+  color:var(--text-muted);
+  margin:0 0 22px;
+  max-width:52ch;
+}
+
+.cta{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:12px 22px;
+  border-radius:999px;
+  background:linear-gradient(120deg, var(--cyan), var(--violet));
+  color:#08101c;
+  font-weight:600;
+  font-size:14px;
+  text-decoration:none;
+  transition:transform .2s ease, box-shadow .2s ease;
+}
+.cta:hover{ transform:translateY(-2px); box-shadow:0 10px 24px color-mix(in srgb, var(--cyan) 35%, transparent); }
+.cta:focus-visible{ outline:2px solid var(--text); outline-offset:3px; }
+.cta.ghost{
+  background:transparent;
+  color:var(--text);
+  border:1px solid var(--surface-border);
+}
+.cta-row{ display:flex; flex-wrap:wrap; gap:12px; }
+
+/* ---------- product grid ---------- */
+.product-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:14px;
+  margin-top:8px;
+}
+.product-card{
+  padding:20px;
+  border-radius:16px;
+  background:var(--surface);
+  border:1px solid var(--surface-border);
+}
+.product-card svg{ width:24px; height:24px; margin-bottom:12px; }
+.product-card h3{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:15px;
+  margin:0 0 6px;
+  letter-spacing:.01em;
+}
+.product-card p{ font-size:13.5px; margin:0; max-width:none; line-height:1.5; }
+.product-card .tag{
+  display:inline-block;
+  margin-top:10px;
+  font-size:10.5px;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:var(--text-muted);
+  border:1px solid var(--surface-border);
+  border-radius:999px;
+  padding:3px 9px;
+}
+
+/* ---------- stat row ---------- */
+.stat-row{ display:flex; gap:34px; margin-top:6px; flex-wrap:wrap; }
+.stat-row strong{
+  display:block;
+  font-family:'Space Grotesk',sans-serif;
+  font-size:30px;
+  color:var(--text);
+}
+.stat-row span{ font-size:12px; color:var(--text-muted); letter-spacing:.08em; text-transform:uppercase; }
+
+/* ---------- footer ---------- */
+footer{
+  position:relative;
+  z-index:2;
+  padding:60px 7vw 40px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:16px;
+  border-top:1px dashed var(--surface-border);
+}
+footer .brand-word{ font-size:13px; }
+footer p{ margin:0; font-size:12.5px; max-width:none; }
+
+/* ---------- reduced motion ---------- */
+@media (prefers-reduced-motion: reduce){
+  html{ scroll-behavior:auto; }
+  .bg-mark{ animation:none; }
+  .thread{ animation:none; }
+  .glass-panel{ transition:none; opacity:1; transform:none; }
+}
+
+/* ---------- responsive ---------- */
+@media (max-width:900px){
+  .thread, .node{ display:none; }
+  .chapter{ justify-content:center !important; padding:0 6vw; min-height:auto; padding-top:120px; padding-bottom:80px; }
+  .glass-panel{ max-width:560px; padding:34px 26px; }
+  .chapter-right .glass-panel, .chapter-left .glass-panel{ border-left:none; border-right:none; border-top:2px solid var(--cyan); }
+  .product-grid{ grid-template-columns:1fr; }
+  .brand-mark{ top:16px; left:16px; }
+  .theme-toggle{ top:14px; right:16px; }
+}
+</style>
+</head>
+<body>
+
+<div class="bg-fixed" aria-hidden="true">
+  <svg class="bg-mark" viewBox="0 0 200 200" fill="none">
+    <polygon points="100,10 190,100 100,190 10,100" stroke="url(#gradA)" stroke-width="1.5" opacity="0.55"/>
+    <polygon points="100,40 160,100 100,160 40,100" stroke="url(#gradA)" stroke-width="1.5" opacity="0.4"/>
+    <polygon points="100,70 130,100 100,130 70,100" stroke="url(#gradA)" stroke-width="1.5" opacity="0.6"/>
+    <defs>
+      <linearGradient id="gradA" x1="0" y1="0" x2="200" y2="200">
+        <stop offset="0%" stop-color="#35d9ea"/>
+        <stop offset="100%" stop-color="#b075f5"/>
+      </linearGradient>
+    </defs>
+  </svg>
+</div>
+
+<a class="brand-mark" href="#hero" aria-label="Unity Elites home">
+  <svg class="logo-glyph" viewBox="0 0 40 40" fill="none">
+    <polygon points="20,3 37,20 20,37 3,20" fill="none" stroke="url(#gradLogo)" stroke-width="2.4"/>
+    <polygon points="20,13 27,20 20,27 13,20" fill="url(#gradLogo)"/>
+    <defs>
+      <linearGradient id="gradLogo" x1="0" y1="0" x2="40" y2="40">
+        <stop offset="0%" stop-color="#35d9ea"/>
+        <stop offset="100%" stop-color="#b075f5"/>
+      </linearGradient>
+    </defs>
+  </svg>
+  <span class="brand-word">UNITY <span>ELITES</span></span>
+</a>
+
+<button class="theme-toggle" id="themeToggle" aria-label="Toggle light and dark mode">
+  <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+  <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+</button>
+
+<nav class="site-nav" id="siteNav">
+  <div class="nav-inner">
+    <a href="#hero">Home</a>
+    <a href="#suite">Suite</a>
+    <a href="#team">Team</a>
+    <a href="#contact">Contact</a>
+  </div>
+</nav>
+
+<main>
+  <div class="thread" aria-hidden="true"></div>
+
+  <section id="hero" class="chapter chapter-right">
+    <div class="node" aria-hidden="true"></div>
+    <div class="glass-panel reveal">
+      <span class="eyebrow">Unity Elites</span>
+      <h1>Hi there!</h1>
+      <p>We're a small crew shipping builds, storefronts and streams under one banner. Everything you need to launch, sell and watch — wired together, not bolted on.</p>
+      <a class="cta" href="#suite">See the suite →</a>
+    </div>
+  </section>
+
+  <section id="suite" class="chapter chapter-left">
+    <div class="node" aria-hidden="true"></div>
+    <div class="glass-panel wide reveal">
+      <span class="eyebrow">The Suite</span>
+      <h2>One login. Four products.</h2>
+      <p>Each tool below is maintained by the people who use it daily, so it stays sharp instead of sprawling.</p>
+      <div class="product-grid">
+        <article class="product-card">
+          <svg viewBox="0 0 24 24" fill="none" stroke="url(#gradLogo)" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M4 9h16M9 4v16"/></svg>
+          <h3>ue-builds</h3>
+          <p>Ship and version your projects without babysitting a pipeline.</p>
+          <span class="tag">docs</span>
+        </article>
+        <article class="product-card">
+          <svg viewBox="0 0 24 24" fill="none" stroke="url(#gradLogo)" stroke-width="2"><path d="M3 7l2-4h14l2 4M3 7h18M3 7v13h18V7"/></svg>
+          <h3>ue-pasco</h3>
+          <p>Inventory and ops, tracked the way your team actually works.</p>
+          <span class="tag">docs</span>
+        </article>
+        <article class="product-card">
+          <svg viewBox="0 0 24 24" fill="none" stroke="url(#gradLogo)" stroke-width="2"><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/><path d="M2 3h2l2.6 12.4a2 2 0 0 0 2 1.6h8.8a2 2 0 0 0 2-1.6L21 7H5"/></svg>
+          <h3>ue-commerce</h3>
+          <p>A storefront that feels handmade, not templated.</p>
+          <span class="tag">docs</span>
+        </article>
+        <article class="product-card">
+          <svg viewBox="0 0 24 24" fill="none" stroke="url(#gradLogo)" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M10 9l5 3-5 3z"/></svg>
+          <h3>ue-movies</h3>
+          <p>Stream and share cuts with a crew, not a crowd.</p>
+          <span class="tag">docs</span>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="team" class="chapter chapter-right">
+    <div class="node" aria-hidden="true"></div>
+    <div class="glass-panel reveal">
+      <span class="eyebrow">How we work</span>
+      <h2>Built by elites, for elites</h2>
+      <p>No ticket queues, no faceless bot. Every product in the suite is run by the same small group that uses it every day, so fixes land fast and decisions stay opinionated.</p>
+      <div class="stat-row">
+        <div><strong>4</strong><span>Products</span></div>
+        <div><strong>1</strong><span>Team</span></div>
+        <div><strong>0</strong><span>Middlemen</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="chapter chapter-left">
+    <div class="node" aria-hidden="true"></div>
+    <div class="glass-panel reveal">
+      <span class="eyebrow">Get in</span>
+      <h2>Let's build something</h2>
+      <p>Pick a product, poke the docs, or just say hello — we read everything that lands here.</p>
+      <div class="cta-row">
+        <a class="cta" href="mailto:hello@unityelites.com">hello@unityelites.com</a>
+        <a class="cta ghost" href="#suite">Browse docs</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <span class="brand-word">UNITY <span>ELITES</span></span>
+  <p>© 2026 Unity Elites. Built in-house.</p>
+</footer>
+
+<script>
+  // theme toggle
+  const root = document.documentElement;
+  const toggle = document.getElementById('themeToggle');
+  const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+  root.setAttribute('data-theme', prefersLight ? 'light' : 'dark');
+  toggle.addEventListener('click', () => {
+    const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+  });
+
+  // nav appears on scroll
+  const nav = document.getElementById('siteNav');
+  const onScroll = () => {
+    if(window.scrollY > 120){ nav.classList.add('visible'); }
+    else{ nav.classList.remove('visible'); }
+  };
+  window.addEventListener('scroll', onScroll, { passive:true });
+  onScroll();
+
+  // scroll reveal for glass panels
+  const panels = document.querySelectorAll('.glass-panel.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('in-view'); });
+  }, { threshold:0.25 });
+  panels.forEach(p => io.observe(p));
+</script>
+
+</body>
+</html>
